@@ -45,36 +45,11 @@ class MyAppController extends Controller
             'logoapp'               => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
             'splash'                => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
             'appidentificationkey'  => 'required|unique:my_apps',
-        ]);    
-
-        if (request()->hasFile('logoapp'))  
-        {   
-            $logo = request('logoapp');
-            $logoapp_name = time() . '.' . request('logoapp')->getClientOriginalExtension();
-            $public_path  = 'uploads/logo/' . $logoapp_name; 
-            Image::make($logo)->resize(200,200)->save($public_path);
-        }else
-        { 
-            $logoapp_name = 'logo.png';  
-        }  
-
-
-        if (request()->hasFile('splash'))  
-        {  
-            $splash = request('splash'); 
-            $splash_name = time() . '.' . request('splash')->getClientOriginalExtension();
-            $public_path = 'uploads/splash/' . $splash_name; 
-            Image::make($splash)->resize(200,200)->save($public_path);
-        }else
-        { 
-            $splash_name = 'splash.png';  
-        } 
-
-        // $data['appidentificationkey'] = Str::uuid(); 
+        ]);     
         
-        $data['appidentificationkey'] = $this->generateAppidentificationkey(); 
-        $data['logoapp']  =  $logoapp_name; 
-        $data['splashscreen']   =  $splash_name; 
+        $data['logoapp']                =  uplode_img('logoapp' , 'logoapp_name' , 'uploads/logo/' , 'logo.png');
+        $data['splashscreen']           =  uplode_img('splash' , 'splash_name' , 'uploads/splash/' , 'splash.png'); 
+        $data['appidentificationkey']   = $this->generateAppidentificationkey(); 
         $myapp = MyApp::create($data);   
 
         return redirect('/myapp')->with('success', 'MyApp Created!');
@@ -126,27 +101,16 @@ class MyAppController extends Controller
             {   
                 if($myapp->logoapp !==  'logo.png'){
                     Storage::delete('logo/'. $myapp->logoapp);    
-                } 
-                $logo = request('logoapp');
-                $logoapp_name = time() . '.' . request('logoapp')->getClientOriginalExtension();
-                $public_path  = 'uploads/logo/' . $logoapp_name; 
-                Image::make($logo)->resize(200,200)->save($public_path);
-           
-                $data['logoapp']  =  $logoapp_name; 
+                }   
+                $data['logoapp']  =  uplode_img('logoapp' , 'logoapp_name' , 'uploads/logo/' , 'logo.png');
             }  
-
-
+ 
             if (request()->hasFile('splash')) 
             {   
                 if($myapp->splashscreen !==  'splash.png'){
                     Storage::delete('splash/'. $myapp->splashscreen);    
-                }
-                $splash = request('splash'); 
-                $splash_name = time() . '.' . request('splash')->getClientOriginalExtension();
-                $public_path = 'uploads/splash/' . $splash_name; 
-                Image::make($splash)->resize(200,200)->save($public_path);
-           
-                $data['splashscreen']   =  $splash_name; 
+                }  
+                $data['splashscreen']   =  uplode_img('splash' , 'splash_name' , 'uploads/splash/' , 'splash.png'); 
             }  
           
         $myapp->update($data);
