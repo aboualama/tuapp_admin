@@ -18,7 +18,6 @@ class MyApp extends Model
 
     } 
 
-
     public function getSplashPathAttribute()
     {
         return asset('uploads/splash/' . $this->splashscreen);
